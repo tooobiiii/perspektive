@@ -1,18 +1,27 @@
 import com.modrinth.minotaur.dependencies.ModDependency
 
+
+val minecraftVersion = project.property("minecraft_version") as String
+val modVersion = project.property("mod_version") as String
+val loaderVersion = project.property("loader_version") as String
+val loomVersion = project.property("loom_version") as String
+val fabricAPIVersion = project.property("fabric_version") as String
+val kotlinVersion = project.property("fabric_language_kotlin_version") as String
+val modmenuVersion = project.property("modmenu_version") as String
+val groupString = project.property("group") as String
+
+
+
 plugins {
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.serialization") version "2.0.21"
-    id("fabric-loom") version "1.8-SNAPSHOT"
+    kotlin("jvm") version "2.2.21"
+    kotlin("plugin.serialization") version "2.2.21"
+    id("fabric-loom") version "1.13-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.8.7"
-    id("org.quiltmc.quilt-mappings-on-loom") version "4.2.3"
     id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
-group = "de.royzer"
-version = "1.4.3"
-
-val minecraftVersion = "1.21.4"
+group = groupString
+version = modVersion
 
 repositories {
     mavenCentral()
@@ -22,19 +31,21 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:0.16.9")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.114.0+1.21.4")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
-    modApi("com.terraformersmc:modmenu:12.0.0-beta.1")
+    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricAPIVersion")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$kotlinVersion")
+    modApi("com.terraformersmc:modmenu:$modmenuVersion")
 }
 
 tasks {
     compileJava {
         options.encoding = "UTF-8"
-        options.release.set(17)
+        options.release.set(21)
     }
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
     }
     processResources {
         val props = mapOf("version" to project.version)

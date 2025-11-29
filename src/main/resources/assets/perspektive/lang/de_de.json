@@ -6,5 +6,6 @@
   "perspektive.scrollingEnabled": "Mausrad-Scrolling während in Freelook",
   "perspektive.tooltips.scrollingEnabled": "Wirkt nur wenn Mausrad-Scrolling in Freelook an ist",
   "perspektive.cameraDistanceInThirdPerson": "In thirdperson Kameradistanz nutzen",
-  "perspektive.tooltips.cameraDistanceInThirdPerson": "Ermöglicht auch in der 'normalen' thirdperson die angegebene Kameradistanz nutzen und die Kameradistanz per Mausrad zu ändern"
+  "perspektive.tooltips.cameraDistanceInThirdPerson": "Ermöglicht auch in der 'normalen' thirdperson die angegebene Kameradistanz nutzen und die Kameradistanz per Mausrad zu ändern",
+  "key.category.perspektive.perspektive": "Perspektive"
 }

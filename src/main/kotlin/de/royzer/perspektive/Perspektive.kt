@@ -1,6 +1,8 @@
 package de.royzer.perspektive
 
 import com.mojang.blaze3d.platform.InputConstants
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.client.KeyMapping.Category;
 import de.royzer.perspektive.settings.PerspektiveSettings
 import de.royzer.perspektive.settings.loadConfig
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -22,11 +24,15 @@ object Perspektive {
     var freeLookToggled = false
     private var perspectiveBefore = CameraType.FIRST_PERSON
 
+    private val modKeybindCategory = Category.register(
+        ResourceLocation.fromNamespaceAndPath("perspektive","perspektive")
+    )
+
     private val useKeybind: KeyMapping = KeyBindingHelper.registerKeyBinding(
-        KeyMapping("Freelook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Y, "Perspektive")
+        KeyMapping("Freelook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Y, modKeybindCategory)
     )
     private val toggleKeybind: KeyMapping = KeyBindingHelper.registerKeyBinding(
-        KeyMapping("Toggle Freelook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "Perspektive")
+        KeyMapping("Toggle Freelook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, modKeybindCategory)
     )
 
     fun init() {
