@@ -6,7 +6,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,7 +38,7 @@ public abstract class CameraMixin {
                     ordinal = 1
             )
     )
-    public void update(BlockGetter area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    public void update(Level level, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         if (Perspektive.INSTANCE.getFreeLookEnabled()) {
             if (firstPress) {
                 Perspektive.setPitch(focusedEntity.getXRot());
@@ -55,7 +55,7 @@ public abstract class CameraMixin {
             method = "setup",
             at = @At("TAIL")
     )
-    public void setDistance(BlockGetter area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    public void setDistance(Level level, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         if (Perspektive.INSTANCE.getFreeLookEnabled() ||
                 (PerspektiveSettings.INSTANCE.getCameraDistanceAlsoIn3rdPerson()
                         && Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON)) {
