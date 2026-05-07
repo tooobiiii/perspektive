@@ -1,7 +1,7 @@
 package de.royzer.perspektive.settings
 
 import de.royzer.perspektive.CameraDistanceOption
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.screens.Screen
@@ -139,14 +139,7 @@ class PerspektiveSettingsScreen(
         this.minecraft?.setScreen(lastScreen)
     }
 
-    override fun render(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
-//        renderBackground(guiGraphics)
-        super.render(guiGraphics, i, j, f)
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, i: Int, j: Int, f: Float) {
+        super.extractRenderState(guiGraphics, i, j, f)
     }
 }
-
-//val cameraDistanceOption = OptionInstance("perspektive.distance", OptionInstance.noTooltip(), { optionText, value ->
-//        Options.genericValueLabel(optionText, Component.literal((value.toString().toDouble() / 10.0).toString()))
-//}, OptionInstance.IntRange(0, 640), (PerspektiveSettings.cameraDistance * 10).toInt()) {
-//    PerspektiveSettings.cameraDistance = it.toString().toDouble() / 10
-//}

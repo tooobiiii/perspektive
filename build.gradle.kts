@@ -13,9 +13,9 @@ val groupString = project.property("group") as String
 
 
 plugins {
-    kotlin("jvm") version "2.2.21"
-    kotlin("plugin.serialization") version "2.2.21"
-    id("fabric-loom") version "1.13-SNAPSHOT"
+    kotlin("jvm") version "2.3.21"
+    kotlin("plugin.serialization") version "2.3.21"
+    id("net.fabricmc.fabric-loom") version "1.14-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.8.7"
     id("com.matthewprenger.cursegradle") version "1.4.0"
 }
@@ -30,21 +30,21 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricAPIVersion")
-    modImplementation("net.fabricmc:fabric-language-kotlin:$kotlinVersion")
-    modApi("com.terraformersmc:modmenu:$modmenuVersion")
+    // No mappings needed for MC 26.1+ (unobfuscated)
+    implementation("net.fabricmc:fabric-loader:$loaderVersion")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabricAPIVersion")
+    implementation("net.fabricmc:fabric-language-kotlin:$kotlinVersion")
+    api("com.terraformersmc:modmenu:$modmenuVersion")
 }
 
 tasks {
     compileJava {
         options.encoding = "UTF-8"
-        options.release.set(21)
+        options.release.set(25)
     }
     compileKotlin {
         compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
         }
     }
     processResources {
@@ -63,7 +63,7 @@ modrinth {
     projectId.set("perspektive")
     versionNumber.set(rootProject.version.toString())
     versionType.set("release")
-    uploadFile.set(tasks.remapJar.get())
+    uploadFile.set(tasks.named("jar").get())
     gameVersions.set(listOf(minecraftVersion))
     loaders.addAll(listOf("fabric", "quilt"))
 
@@ -79,7 +79,7 @@ modrinth {
 curseforge {
     apiKey = findProperty("curseforge.token") ?: ""
     project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
-        mainArtifact(tasks.getByName("remapJar").outputs.files.first())
+        mainArtifact(tasks.getByName("jar").outputs.files.first())
 
         id = "501553"
         releaseType = "release"

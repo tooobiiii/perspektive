@@ -6,7 +6,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin {
-    private boolean firstPress = true;
 
     @Shadow
     protected abstract void setRotation(float yaw, float pitch);
@@ -23,43 +21,33 @@ public abstract class CameraMixin {
     @Shadow
     protected abstract void move(float x, float y, float z);
 
-    @Shadow
-    protected abstract float getMaxZoom(float desiredCameraDistance);
-
-    @Shadow
-    private Entity entity;
-
+    /**
+     * Inject inside alignWithEntity, right before the third-person move() call.
+     * This overrides the camera rotation to the freelook rotation so that
+     * the subsequent move() offsets the camera in the correct direction.
+     */
     @Inject(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/Camera;setRotation(FF)V",
-                    shift = At.Shift.AFTER,
-                    ordinal = 1
+                    target = "Lnet/minecraft/client/Camera;getMaxZoom(F)F"
             )
     )
-    public void update(Level level, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    public void onAlignWithEntity(float partialTicks, CallbackInfo ci) {
         if (Perspektive.INSTANCE.getFreeLookEnabled()) {
-            if (firstPress) {
-                Perspektive.setPitch(focusedEntity.getXRot());
-                Perspektive.setYaw(focusedEntity.getYRot());
-            }
-            firstPress = false;
             this.setRotation(Perspektive.getYaw(), Perspektive.getPitch());
-        } else {
-            firstPress = true;
         }
     }
 
     @Inject(
-            method = "setup",
+            method = "alignWithEntity",
             at = @At("TAIL")
     )
-    public void setDistance(Level level, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    public void setDistance(float partialTicks, CallbackInfo ci) {
         if (Perspektive.INSTANCE.getFreeLookEnabled() ||
                 (PerspektiveSettings.INSTANCE.getCameraDistanceAlsoIn3rdPerson()
                         && Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON)) {
-            this.move(-this.getMaxZoom((float)PerspektiveSettings.INSTANCE.getCameraDistance()), 0.0F, 0.0F);
+            this.move(-((float)PerspektiveSettings.INSTANCE.getCameraDistance()), 0.0F, 0.0F);
         }
     }
 }
