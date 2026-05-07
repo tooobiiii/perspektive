@@ -21,6 +21,9 @@ public abstract class CameraMixin {
     @Shadow
     protected abstract void move(float x, float y, float z);
 
+    @Shadow
+    private float getMaxZoom(float desiredDistance) { throw new AssertionError(); }
+
     /**
      * Inject inside alignWithEntity, right before the third-person move() call.
      * This overrides the camera rotation to the freelook rotation so that
@@ -47,7 +50,9 @@ public abstract class CameraMixin {
         if (Perspektive.INSTANCE.getFreeLookEnabled() ||
                 (PerspektiveSettings.INSTANCE.getCameraDistanceAlsoIn3rdPerson()
                         && Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON)) {
-            this.move(-((float)PerspektiveSettings.INSTANCE.getCameraDistance()), 0.0F, 0.0F);
+            float desiredDistance = (float) PerspektiveSettings.INSTANCE.getCameraDistance();
+            float clampedDistance = this.getMaxZoom(desiredDistance);
+            this.move(-clampedDistance, 0.0F, 0.0F);
         }
     }
 }
