@@ -15,7 +15,7 @@ val groupString = project.property("group") as String
 plugins {
     kotlin("jvm") version "2.3.21"
     kotlin("plugin.serialization") version "2.3.21"
-    id("net.fabricmc.fabric-loom") version "1.14-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT"
     id("com.modrinth.minotaur") version "2.8.7"
     id("com.matthewprenger.cursegradle") version "1.4.0"
 }

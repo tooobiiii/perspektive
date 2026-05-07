@@ -1,7 +1,6 @@
 package de.royzer.perspektive.settings
 
 import de.royzer.perspektive.CameraDistanceOption
-import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.screens.Screen
@@ -139,7 +138,4 @@ class PerspektiveSettingsScreen(
         this.minecraft?.setScreen(lastScreen)
     }
 
-    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, i: Int, j: Int, f: Float) {
-        super.extractRenderState(guiGraphics, i, j, f)
-    }
 }
