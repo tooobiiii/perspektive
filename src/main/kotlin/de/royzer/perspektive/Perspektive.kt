@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants
 import de.royzer.perspektive.settings.PerspektiveSettings
 import de.royzer.perspektive.settings.loadConfig
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.CameraType
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.KeyMapping.Category
@@ -28,10 +28,10 @@ object Perspektive {
         Identifier.fromNamespaceAndPath("perspektive", "perspektive")
     )
 
-    private val useKeybind: KeyMapping = KeyBindingHelper.registerKeyBinding(
+    private val useKeybind: KeyMapping = KeyMappingHelper.registerKeyMapping(
         KeyMapping("Freelook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Y, modKeybindCategory)
     )
-    private val toggleKeybind: KeyMapping = KeyBindingHelper.registerKeyBinding(
+    private val toggleKeybind: KeyMapping = KeyMappingHelper.registerKeyMapping(
         KeyMapping("Toggle Freelook", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, modKeybindCategory)
     )
 
@@ -40,16 +40,29 @@ object Perspektive {
 
         ClientTickEvents.END_CLIENT_TICK.register {
             while (toggleKeybind.consumeClick()) {
+                if (!freeLookToggled) {
+                    perspectiveBefore = Minecraft.getInstance().options.cameraType
+                    // Capture player rotation so camera starts behind the character
+                    Minecraft.getInstance().player?.let {
+                        pitch = it.xRot
+                        yaw = it.yRot
+                    }
+                }
                 freeLookEnabled = true
-                if (!freeLookToggled) perspectiveBefore = Minecraft.getInstance().options.cameraType
                 Minecraft.getInstance().options.cameraType = CameraType.THIRD_PERSON_BACK
                 freeLookToggled = !freeLookToggled
             }
             if (useKeybind.isDown) {
                 if (freeLookToggled) return@register
                 else {
-                    if (!freeLookEnabled)
+                    if (!freeLookEnabled) {
                         perspectiveBefore = Minecraft.getInstance().options.cameraType
+                        // Capture player rotation so camera starts behind the character
+                        Minecraft.getInstance().player?.let {
+                            pitch = it.xRot
+                            yaw = it.yRot
+                        }
+                    }
                     freeLookEnabled = true
                     Minecraft.getInstance().options.cameraType = CameraType.THIRD_PERSON_BACK
                 }
